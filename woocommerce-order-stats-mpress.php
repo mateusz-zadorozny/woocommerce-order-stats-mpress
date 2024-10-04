@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Woocommerce Order Stats Mpress
  * Description: Creates a new REST API endpoint for order statistics with cron preloading and settings.
- * Version: 1.0
+ * Version: 1.0.1
  * Author: Mateusz Zadorożny
  * Plugin URI: https://mpress.lemonsqueezy.com/
  * Requires PHP: 7.4
@@ -179,24 +179,44 @@ class WC_Order_Stats_Plugin
 
     private function calculate_stats($period)
     {
-        $end_date = new DateTime();
-        $start_date = new DateTime();
+        // Create DateTime objects and set to UTC or your desired timezone
+        $timezone = new DateTimeZone('Europe/Warsaw'); // Replace with your timezone, e.g., 'Europe/Warsaw'
+        $end_date = new DateTime('now', $timezone);
+        $start_date = new DateTime('now', $timezone);
 
         switch ($period) {
             case 'yesterday':
-                $start_date->modify('-1 day');
-                $end_date->modify('-1 day');
+                // Set start_date to yesterday at 00:00:00
+                $start_date->modify('-1 day')->setTime(0, 0, 0);
+                // Set end_date to yesterday at 23:59:59
+                $end_date->modify('-1 day')->setTime(23, 59, 59);
                 break;
+
             case 'last-week':
-                $start_date->modify('-1 week');
+                // Assuming week starts on Monday and ends on Sunday
+                // Set to last week's Monday at 00:00:00
+                $start_date->modify('last week Monday')->setTime(0, 0, 0);
+                // Set to last week's Sunday at 23:59:59
+                $end_date->modify('last week Sunday')->setTime(23, 59, 59);
                 break;
+
             case 'last-month':
-                $start_date->modify('-1 month');
+                // Set to first day of last month at 00:00:00
+                $start_date->modify('first day of last month')->setTime(0, 0, 0);
+                // Set to last day of last month at 23:59:59
+                $end_date->modify('last day of last month')->setTime(23, 59, 59);
                 break;
+
+            default:
+                // Handle unexpected period values
+                throw new InvalidArgumentException('Invalid period specified.');
         }
 
+        // Format dates with time
+        $date_created = $start_date->format('Y-m-d H:i:s') . '...' . $end_date->format('Y-m-d H:i:s');
+
         $args = array(
-            'date_created' => $start_date->format('Y-m-d') . '...' . $end_date->format('Y-m-d'),
+            'date_created' => $date_created,
             'limit' => -1,
             'return' => 'ids',
         );
