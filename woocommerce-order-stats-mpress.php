@@ -1,9 +1,12 @@
 <?php
 /**
- * Plugin Name:     Woocommerce Order Stats Mpress
+ * Plugin Name: Woocommerce Order Stats Mpress
  * Description: Creates a new REST API endpoint for order statistics with cron preloading and settings.
  * Version: 1.0
  * Author: Mateusz Zadorożny
+ * Plugin URI: https://mpress.lemonsqueezy.com/
+ * Requires PHP: 8.0
+ * WC requires at least: 3.0 
  */
 
 if (!defined('ABSPATH')) {
