@@ -5,8 +5,8 @@
  * Version: 1.0
  * Author: Mateusz Zadorożny
  * Plugin URI: https://mpress.lemonsqueezy.com/
- * Requires PHP: 8.0
- * WC requires at least: 3.0 
+ * Requires PHP: 7.4
+ * Requires Plugins: woocommerce
  */
 
 if (!defined('ABSPATH')) {
